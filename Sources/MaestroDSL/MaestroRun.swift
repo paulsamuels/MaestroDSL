@@ -1,7 +1,7 @@
 import Foundation
 import Yams
 
-public func maestroRun(_ bundleID: String, @FlowBuilder composition: () -> BasicFlow) throws {
+public func maestroRun(_ bundleID: String, @FlowBuilder<Void> composition: () -> BasicFlow) throws {
     let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent("commands.yaml")
 
     try maestroCompose(bundleID, composition: composition).write(

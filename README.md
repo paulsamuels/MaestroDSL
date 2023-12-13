@@ -46,15 +46,12 @@ import MaestroDSLMacro
 
 @Page
 struct HomePage {
-    @FlowBuilder
-    fileprivate func tapAdd() -> BasicFlow {
+    @FlowBuilder<HomePage>
+    func tapAdd() -> Flow<HomePage> {
         TapOn(.text("Add"))
     }
 }
 ```
-
-> ![NOTE]
-> This is totally using some funky macro magic which requires that your method be marked as `fileprivate` so that the macro can generate a stronger type to ensure we build flows in a page specific way.
 
 The `EditFormPage` is more of the same
 
@@ -64,20 +61,20 @@ import MaestroDSLMacro
 
 @Page
 struct EditFormPage {
-    @FlowBuilder
-    fileprivate func setFirstName(_ name: String) -> BasicFlow {
+    @FlowBuilder<EditFormPage>
+    func setFirstName(_ name: String) -> Flow<EditFormPage> {
         TapOn(.id("First name"))
         Input(name)
     }
 
-    @FlowBuilder
-    fileprivate func setLastName(_ name: String) -> BasicFlow {
+    @FlowBuilder<EditFormPage>
+    func setLastName(_ name: String) -> Flow<EditFormPage> {
         TapOn(.id("Last name"))
         Input(name)
     }
 
-    @FlowBuilder
-    fileprivate func tapDone() -> BasicFlow {
+    @FlowBuilder<EditFormPage>
+    func tapDone() -> Flow<EditFormPage> {
         TapOn(.text("Done"))
     }
 }
