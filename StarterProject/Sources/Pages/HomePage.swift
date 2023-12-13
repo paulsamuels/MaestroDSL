@@ -3,8 +3,8 @@ import MaestroDSLMacro
 
 @Page
 struct HomePage {
-    @FlowBuilder
-    fileprivate func tapAdd() -> BasicFlow {
+    @FlowBuilder<HomePage>
+    func tapAdd() -> Flow<HomePage> {
         TapOn(.text("Add"))
     }
 }

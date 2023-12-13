@@ -314,7 +314,7 @@ final class MaestroComposeTests: XCTestCase {
     ]
 }
 
-private func fixtureOf(_ expected: String, line: UInt = #line, @FlowBuilder build: () -> BasicFlow) -> Fixture {
+private func fixtureOf(_ expected: String, line: UInt = #line, @FlowBuilder<Void> build: () -> BasicFlow) -> Fixture {
     .init(expected: expected, flow: build(), line: line)
 }
 

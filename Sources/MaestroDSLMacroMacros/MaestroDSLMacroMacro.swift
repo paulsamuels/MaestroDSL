@@ -16,12 +16,7 @@ public struct PageMacro: ExtensionMacro, MemberMacro {
         var hasCustomInit = false
         let decls = declaration.memberBlock.members.as(MemberBlockItemListSyntax.self).flatMap {
             $0.compactMap {
-                if
-                    let function = $0.decl.as(FunctionDeclSyntax.self),
-                    function.attributes.contains(where: { $0.as(AttributeSyntax.self)?.attributeName.as(IdentifierTypeSyntax.self)?.name.text == "FlowBuilder" })
-                {
-                    return makePageFlowFunction(context: context, type: type, function: function)
-                } else if let initializer = $0.decl.as(InitializerDeclSyntax.self) {
+                if let initializer = $0.decl.as(InitializerDeclSyntax.self) {
                     hasCustomInit = true
                     return makeBuilderInitializer(context: context, type: type, initializer: initializer)
                 } else {
@@ -83,27 +78,6 @@ public struct PageMacro: ExtensionMacro, MemberMacro {
 
 
         """
-    }
-
-    private static func makePageFlowFunction(
-        context: some SwiftSyntaxMacros.MacroExpansionContext,
-        type: some SwiftSyntax.TypeSyntaxProtocol,
-        function: FunctionDeclSyntax
-    ) -> FunctionDeclSyntax? {
-        guard function.modifiers.contains(where: { $0.name.text == "fileprivate" }) else {
-            context.diagnose(.init(node: function.signature, message: MaestroError.functionsMustBeFilePrivate))
-            return nil
-        }
-
-        var mutableFunction = function
-        mutableFunction.attributes = []
-        mutableFunction.modifiers = mutableFunction.modifiers.filter { $0.name.text != "fileprivate" }
-        mutableFunction.signature.returnClause = ReturnClauseSyntax(type: try! TypeSyntax(validating: "Flow<\(type.trimmed)>"))
-
-        let parameters = ([function.name.trimmed.text] + function.signature.parameterClause.parameters.map { ($0.secondName ?? $0.firstName).text }).joined(separator: ", ")
-        let formattedParameters = parameters.isEmpty ? "" : "\(parameters)"
-        mutableFunction.body?.statements = "invokeOriginalFlowErasingType(function: \(raw: formattedParameters))"
-        return mutableFunction
     }
 
     public static func expansion<Declaration: SwiftSyntax.DeclGroupSyntax>(
